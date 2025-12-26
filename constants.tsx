@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Language, PhrasePair, SemanticAnchor } from './types';
 
@@ -41,7 +40,7 @@ const datasetAuthoritative = [
   { index: 17, en: ["To travel.", "Where do you go?", ["travel", "Where"]], es: ["Para viajar.", "¿A dónde vas?", ["viajar", "dónde"]], fr: ["Pour voyager.", "Où vas-tu ?", ["voyager", "Où"]], de: ["Um zu reisen.", "Wohin gehst du?", ["reisen", "Wohin"]] },
   { index: 18, en: ["I want to go to many countries.", "We can together.", ["want", "together"]], es: ["Quiero ir a muchos países.", "Podemos ir juntos.", ["Quiero", "juntos"]], fr: ["Je veux aller dans beaucoup de pays.", "Nous pouvons ensemble.", ["veux", "ensemble"]], de: ["Ich möchte in viele Länder gehen.", "Wir können zusammen.", ["möchte", "zusammen"]] },
   { index: 19, en: ["I love it.", "So, what is next?", ["love", "next"]], es: ["Me encanta.", "Entonces, ¿qué sigue?", ["encanta", "sigue"]], fr: ["J’adore ça.", "Alors, quelle est la suite ?", ["adore", "suite"]], de: ["Ich liebe es.", "Also, was kommt als Nächstes?", ["liebe", "Nächstes"]] },
-  { index: 20, en: ["This is to help.", "Help with what?", ["help", "what"]], es: ["Esto es para ayudar.", "¿Ayudar con qué?", ["ayudar", "qué"]], fr: ["Ceci est pour aider.", "Aider avec quoi ?", ["aider", "quoi"]], de: ["Das ist zur Hilfe.", "Hilfe womit?", ["Hilfe", "womit"]] },
+  { index: 20, en: ["This is to help.", "Help with what?", ["help", "what"]], es: ["Esto es para ayudar.", "¿Ayudar con qué?", ["ayudar", "qué"]], fr: ["Ceci est para aider.", "Aider avec quoi ?", ["aider", "quoi"]], de: ["Das ist zur Hilfe.", "Hilfe womit?", ["Hilfe", "womit"]] },
   { index: 21, en: ["We can speak together.", "What do you want to say?", ["speak", "say"]], es: ["Podemos hablar juntos.", "¿Qué quieres decir?", ["hablar", "decir"]], fr: ["Nous pouvons parler ensemble.", "Que veux-tu dire ?", ["parler", "dire"]], de: ["Wir können zusammen sprechen.", "Was möchtest du sagen?", ["sprechen", "sagen"]] },
   { index: 22, en: ["Not sure.", "Want to practice more?", ["sure", "practice"]], es: ["No estoy seguro.", "¿Quieres practicar más?", ["seguro", "practicar"]], fr: ["Je ne sais pas.", "Tu veux pratiquer plus ?", ["sais", "pratiquer"]], de: ["Nicht sicher.", "Möchtest du mehr üben?", ["sicher", "üben"]] },
   { index: 23, en: ["Yes, a lot.", "Can you speak slowly?", ["lot", "slowly"]], es: ["Sí, mucho.", "¿Puedes hablar despacio?", ["mucho", "despacio"]], fr: ["Oui, beaucoup.", "Peux-tu parler lentement ?", ["beaucoup", "lentement"]], de: ["Ja, viel.", "Kannst du langsam sprechen?", ["viel", "langsam"]] },
@@ -106,7 +105,7 @@ const datasetAuthoritative = [
   { index: 82, en: ["And again.", "Again a lot of times.", ["again", "times"]], es: ["Y otra vez.", "Otra vez muchas veces.", ["otra", "veces"]], fr: ["Et encore.", "Encore beaucoup de fois.", ["encore", "fois"]], de: ["Und nochmal.", "Nochmal viele Male.", ["nochmal", "Male"]] },
   { index: 83, en: ["We can try testing each other?", "Is this good?", ["testing", "good"]], es: ["¿Podemos intentar evaluarnos?", "¿Esto es bueno?", ["evaluarnos", "bueno"]], fr: ["On peut essayer de se tester ?", "C’est bien ?", ["tester", "bien"]], de: ["Wir können versuchen, uns gegenseitig zu testen?", "Ist das gut?", ["testen", "gut"]] },
   { index: 84, en: ["Much better.", "Why?", ["better", "Why"]], es: ["Mucho mejor.", "¿Por qué?", ["mejor", "Por"]], fr: ["Beaucoup mieux.", "Pourquoi ?", ["mieux", "Pourquoi"]], de: ["Viel besser.", "Warum?", ["besser", "Warum"]] },
-  { index: 85, en: ["To help speaking and listening.", "This is very important.", ["help", "important"]], es: ["Para ayudar a hablar y escuchar.", "Esto es muy importante.", ["ayudar", "importante"]], fr: ["Pour aider à parler et écouter.", "C’est très important.", ["aider", "importante"]], de: ["Um beim Sprechen und Zuhören zu helfen.", "Das ist sehr wichtig.", ["helfen", "wichtig"]] },
+  { index: 85, en: ["To help speaking and listening.", "This is very important.", ["help", "important"]], es: ["Para ayudar a hablar y escuchar.", "Esto es muy importante.", ["ayudar", "importante"]], fr: ["Para ayudar a hablar y escuchar.", "C’est très important.", ["aider", "importante"]], de: ["Um beim Sprechen und Zuhören zu helfen.", "Das ist sehr wichtig.", ["helfen", "wichtig"]] },
   { index: 86, en: ["Ok, almost finished now.", "How much?", ["finished", "much"]], es: ["Ok, casi terminado ahora.", "¿Cuánto?", ["terminado", "Cuánto"]], fr: ["Ok, presque fini maintenant.", "Combien ?", ["fini", "Combien"]], de: ["Okay, jetzt fast fertig.", "Wie viel?", ["fertig", "viel"]] },
   { index: 87, en: ["20 more.", "Are you sure?", ["more", "sure"]], es: ["20 más.", "¿Estás seguro?", ["más", "seguro"]], fr: ["Encore vingt.", "Tu es sûr ?", ["vingt", "sûr"]], de: ["Noch zwanzig.", "Bist du sicher?", ["zwanzig", "sicher"]] },
   { index: 88, en: ["Yes, really close.", "What to do after?", ["close", "do"]], es: ["Sí, muy cerca.", "¿Qué hacer después?", ["cerca", "hacer"]], fr: ["Oui, vraiment proche.", "Que faire après ?", ["proche", "faire"]], de: ["Ja, wirklich nah.", "Was machen wir danach?", ["nah", "machen"]] },
@@ -132,6 +131,7 @@ const NEGATIONS = ['don’t', 'not', 'no', 'ne…pas', 'nicht', 'tampoco'];
  * Deterministic selection of fallback anchor.
  */
 function resolveFallback(text: string, language: Language): string {
+  if (!text) return "";
   const words = text.split(/\s+/).map(w => w.replace(/[¡!¿?,.]/g, ''));
   
   // 1. Strong Verb
@@ -152,23 +152,23 @@ function resolveFallback(text: string, language: Language): string {
  * Ensures all datasets are perfectly mirrored in structure.
  */
 export const PHRASES: PhrasePair[] = datasetAuthoritative.map((step) => {
-  const en = step.en as [string, string, string[]];
-  const es = step.es as [string, string, string[]];
-  const fr = step.fr as [string, string, string[]];
-  const de = step.de as [string, string, string[]];
+  const en = (step.en || []) as [string, string, string[]];
+  const es = (step.es || []) as [string, string, string[]];
+  const fr = (step.fr || []) as [string, string, string[]];
+  const de = (step.de || []) as [string, string, string[]];
 
   const getMap = (partIdx: 0 | 1) => ({
-    [Language.ENGLISH]: en[partIdx],
-    [Language.SPANISH]: es[partIdx],
-    [Language.FRENCH]: fr[partIdx],
-    [Language.GERMAN]: de[partIdx],
+    [Language.ENGLISH]: en[partIdx] || "",
+    [Language.SPANISH]: es[partIdx] || "",
+    [Language.FRENCH]: fr[partIdx] || "",
+    [Language.GERMAN]: de[partIdx] || "",
   });
 
   /**
    * V_11.2 Anchor Resolution MUST be Player-Local
    */
   const getAnchorsForRole = (roleIdx: 0 | 1): SemanticAnchor[] => {
-    const roleTextEn = en[roleIdx];
+    const roleTextEn = en[roleIdx] || "";
     const authorAnchorsEn = en[2] || [];
     const clean = (s: string) => s.replace(/[¡!¿?,.]/g, '').toLowerCase();
 

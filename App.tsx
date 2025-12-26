@@ -190,7 +190,7 @@ const App: React.FC = () => {
         return (
           <div className="relative flex flex-col items-center justify-center h-full w-full overflow-hidden" style={{ backgroundColor: COLORS.BRAND_BLUE }}>
             <div className="absolute bottom-0 left-0 right-0 z-0 pointer-events-none flex justify-center items-end opacity-100 animate-koala-up">
-              <Koalas_bottom_1 className="w-full h-auto max-h-[30vh]" />
+              <KoalasGlassesOnHead className="w-full h-auto max-h-[30vh]" />
             </div>
 
             <div className="relative z-10 flex flex-col items-center space-y-8 p-6">
