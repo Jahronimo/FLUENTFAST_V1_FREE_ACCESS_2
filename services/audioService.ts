@@ -1,4 +1,3 @@
-
 import { Language } from '../types';
 
 /**
@@ -46,7 +45,7 @@ const findDeterministicVoice = (lang: Language): SpeechSynthesisVoice | null => 
  * Rule 5.1: Highlight Normalization Function (LOCKED)
  */
 export const normalizeForHighlight = (text: string): string => {
-  return text
+  return (text || '')
     .replace(/[.,!?:;“”‘’"'()[\]{}]/g, '') // Rule 5.1: Remove specific punctuation
     .replace(/\s+/g, ' ')                  // Collapse multiple spaces
     .trim();
@@ -75,7 +74,13 @@ export const playPhrase = (
 
   try {
     const normalizedText = normalizeForHighlight(text);
-    const normalizedWords = normalizedText.split(' ');
+    const normalizedWords = normalizedText.split(' ').filter(w => w.length > 0);
+
+    // Safety check for empty text
+    if (normalizedWords.length === 0) {
+      if (onEnd) onEnd();
+      return;
+    }
 
     // Rule 2: Strongly reference the utterance to prevent GC
     activeUtterance = new SpeechSynthesisUtterance(normalizedText); 

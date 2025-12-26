@@ -39,7 +39,14 @@ const App: React.FC = () => {
         if (!response.ok) throw new Error('Not found');
         return response.json();
       })
-      .then(data => setLottieData(data))
+      .then(data => {
+        // Safety check: ensure JSON data is a valid Lottie object
+        if (data && typeof data === 'object' && Array.isArray(data.layers)) {
+          setLottieData(data);
+        } else {
+          setLottieError(true);
+        }
+      })
       .catch(() => setLottieError(true));
   }, []);
 
@@ -120,7 +127,9 @@ const App: React.FC = () => {
     }
   };
 
-  const renderPageContent = (page: Page) => {
+  const renderPageContent = (page: Page | null) => {
+    if (!page) return null; // Safe check for undefined/null page during transition
+
     switch (page) {
       case 'HOME':
         return (
@@ -180,8 +189,8 @@ const App: React.FC = () => {
       case 'PARTNER':
         return (
           <div className="relative flex flex-col items-center justify-center h-full w-full overflow-hidden" style={{ backgroundColor: COLORS.BRAND_BLUE }}>
-            <div className="absolute bottom-0 left-0 right-0 z-0 pointer-events-none flex justify-center items-end opacity-100">
-              <KoalasGlassesOnHead className="w-full h-auto max-h-[30vh]" />
+            <div className="absolute bottom-0 left-0 right-0 z-0 pointer-events-none flex justify-center items-end opacity-100 animate-koala-up">
+              <Koalas_bottom_1 className="w-full h-auto max-h-[30vh]" />
             </div>
 
             <div className="relative z-10 flex flex-col items-center space-y-8 p-6">
@@ -262,7 +271,7 @@ const App: React.FC = () => {
         </div>
       )}
       <div className={`page-surface ${isTransitioning ? 'animate-swipe-enter' : ''}`}>
-        {renderPageContent(isTransitioning ? nextPage! : currentPage)}
+        {renderPageContent(isTransitioning ? nextPage : currentPage)}
       </div>
     </div>
   );
