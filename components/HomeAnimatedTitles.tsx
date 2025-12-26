@@ -1,3 +1,11 @@
+if (!Array.isArray(titles) || titles.length === 0) {
+  return (
+    <div className="text-white text-3xl font-bold">
+      FluentFast
+    </div>
+  );
+}
+
 
 import React, { useState, useEffect } from 'react';
 import { playLetterMotion, playTitlePresence } from '../services/uiAudioService';
