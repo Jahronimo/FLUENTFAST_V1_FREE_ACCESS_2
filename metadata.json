@@ -1,7 +1,0 @@
-{
-  "name": "FluentFast Conversations",
-  "description": "A high-fidelity language learning product for two-player shared-device conversations, featuring deterministic layout and text-to-speech capabilities.",
-  "requestFramePermissions": [
-    "microphone"
-  ]
-}
