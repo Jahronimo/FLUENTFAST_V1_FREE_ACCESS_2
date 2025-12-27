@@ -74,7 +74,7 @@ const App: React.FC = () => {
       case 'HOME':
         return (
           <div className="relative flex flex-col items-center justify-center h-full w-full overflow-hidden" style={{ backgroundColor: COLORS?.BRAND_BLUE ?? '#6865F0' }}>
-            <div className="absolute top-[10vh] z-10 h-[30vh] w-[30vh] animate-float flex items-center justify-center">
+            <div className="absolute top-[10vh] z-10 h-[28.5vh] w-[28.5vh] animate-float flex items-center justify-center">
                <Koala_1 className="w-full h-full" />
             </div>
             <div className="relative z-20 w-full h-full px-[3vw] flex flex-col items-center justify-center">
