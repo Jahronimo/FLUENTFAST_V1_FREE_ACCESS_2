@@ -14,17 +14,17 @@ interface TextFitterProps {
 }
 
 const TextFitter: React.FC<TextFitterProps> = ({
-  text,
+  text = "",
   isRoleA,
   underline,
   containerWidth,
   containerHeight,
-  padding,
+  padding = { top: 0, bottom: 0, left: 0, right: 0 },
   anchors = [],
   activeCharIndex = -1,
   isRootCard
 }) => {
-  const [fontSize, setFontSize] = useState(60);
+  const [fontSize, setFontSize] = useState(20);
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const textContentRef = useRef<HTMLDivElement>(null);
@@ -33,15 +33,16 @@ const TextFitter: React.FC<TextFitterProps> = ({
   const DETERMINISTIC_LINE_HEIGHT = 1.1;
   const MICRO_BACKOFF = 0.975;
 
-  const words = useMemo(() => text.split(/\s+/), [text]);
-  const normalizedText = useMemo(() => normalizeForHighlight(text), [text]);
-  const normalizedWords = useMemo(() => normalizedText.split(' '), [normalizedText]);
+  const words = useMemo(() => (text || "").split(/\s+/).filter(Boolean), [text]);
+  const normalizedText = useMemo(() => normalizeForHighlight(text || ""), [text]);
+  const normalizedWords = useMemo(() => normalizedText.split(' ').filter(Boolean), [normalizedText]);
 
   const wordBoundaryMap = useMemo(() => {
     const boundaries: { start: number; end: number }[] = [];
     let currentPos = 0;
     normalizedWords.forEach((word) => {
       const start = normalizedText.indexOf(word, currentPos);
+      if (start === -1) return;
       const end = start + word.length;
       boundaries.push({ start, end });
       currentPos = end + 1;
@@ -60,8 +61,8 @@ const TextFitter: React.FC<TextFitterProps> = ({
     const targetHeight = containerHeight - padding.top - padding.bottom;
     if (targetWidth <= 0 || targetHeight <= 0) return;
 
-    const longestWord = words.reduce((a, b) => a.length > b.length ? a : b, "");
-    let wordLow = 1, wordHigh = 1000, wordCeiling = 1;
+    const longestWord = words.length > 0 ? words.reduce((a, b) => a.length > b.length ? a : b, "") : "";
+    let wordLow = 1, wordHigh = 500, wordCeiling = 1;
     while (wordLow <= wordHigh) {
       const mid = Math.floor((wordLow + wordHigh) / 2);
       if (checkWordFit(longestWord, mid, targetWidth)) {
@@ -82,53 +83,61 @@ const TextFitter: React.FC<TextFitterProps> = ({
         high = mid - 1;
       }
     }
-    setFontSize(Math.max(1, Math.floor(bestSize * MICRO_BACKOFF)));
+    setFontSize(Math.max(10, Math.floor(bestSize * MICRO_BACKOFF)));
   }, [text, words, containerWidth, containerHeight, isRoleA, padding]);
 
   useLayoutEffect(() => {
-    if (!underline || anchors.length === 0 || !textContentRef.current || fontSize === 1) {
+    if (!underline || anchors.length === 0 || !textContentRef.current || !fontSize) {
       setUnderlineRects([]);
       return;
     }
-    const containerRect = textContentRef.current.getBoundingClientRect();
-    const wordElements = Array.from(textContentRef.current.querySelectorAll('[data-word-idx]')) as HTMLElement[];
-    const foundRects: { rect: DOMRect; color: string }[] = [];
-    const clean = (s: string) => s.replace(/[¡!¿?,.]/g, '').toLowerCase();
+    try {
+      const containerRect = textContentRef.current.getBoundingClientRect();
+      const wordElements = Array.from(textContentRef.current.querySelectorAll('[data-word-idx]')) as HTMLElement[];
+      const foundRects: { rect: DOMRect; color: string }[] = [];
+      const clean = (s: string) => (s || "").replace(/[¡!¿?,.]/g, '').toLowerCase();
 
-    anchors.forEach(({ text: anchorText, color }) => {
-      const anchorWords = anchorText.split(/\s+/).map(clean);
-      if (anchorWords.length === 0) return;
-      for (let i = 0; i <= wordElements.length - anchorWords.length; i++) {
-        let match = true;
-        for (let j = 0; j < anchorWords.length; j++) {
-          if (clean(wordElements[i + j].textContent || "") !== anchorWords[j]) {
-            match = false;
-            break;
+      anchors.forEach(({ text: anchorText, color }) => {
+        const anchorWords = (anchorText || "").split(/\s+/).filter(Boolean).map(clean);
+        if (anchorWords.length === 0) return;
+        for (let i = 0; i <= wordElements.length - anchorWords.length; i++) {
+          let match = true;
+          for (let j = 0; j < anchorWords.length; j++) {
+            if (clean(wordElements[i + j].textContent || "") !== anchorWords[j]) {
+              match = false;
+              break;
+            }
+          }
+          if (match) {
+            const matchedSpans = wordElements.slice(i, i + anchorWords.length);
+            const rects = matchedSpans.map(s => s.getBoundingClientRect());
+            const minLeft = Math.min(...rects.map(r => r.left));
+            const maxRight = Math.max(...rects.map(r => r.right));
+            const maxBottom = Math.max(...rects.map(r => r.bottom));
+            const minTop = Math.min(...rects.map(r => r.top));
+            foundRects.push({
+              rect: new DOMRect(minLeft - containerRect.left, minTop - containerRect.top, maxRight - minLeft, maxBottom - minTop),
+              color
+            });
           }
         }
-        if (match) {
-          const matchedSpans = wordElements.slice(i, i + anchorWords.length);
-          const rects = matchedSpans.map(s => s.getBoundingClientRect());
-          const minLeft = Math.min(...rects.map(r => r.left));
-          const maxRight = Math.max(...rects.map(r => r.right));
-          const maxBottom = Math.max(...rects.map(r => r.bottom));
-          const minTop = Math.min(...rects.map(r => r.top));
-          foundRects.push({
-            rect: new DOMRect(minLeft - containerRect.left, minTop - containerRect.top, maxRight - minLeft, maxBottom - minTop),
-            color
-          });
-        }
-      }
-    });
-    setUnderlineRects(foundRects);
+      });
+      setUnderlineRects(foundRects);
+    } catch (e) {
+      setUnderlineRects([]);
+    }
   }, [fontSize, underline, anchors, words]);
 
   function checkWordFit(word: string, size: number, maxWidth: number): boolean {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    if (!context) return true;
-    context.font = `${isRoleA ? '800' : '300'} ${size}px Inter, sans-serif`;
-    return context.measureText(word).width <= maxWidth;
+    try {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      if (!context) return true;
+      context.font = `${isRoleA ? '800' : '300'} ${size}px Inter, sans-serif`;
+      return context.measureText(word).width <= maxWidth;
+    } catch (e) {
+      return true;
+    }
   }
 
   function checkFullFit(str: string, size: number, maxWidth: number, maxHeight: number): boolean {
@@ -151,12 +160,12 @@ const TextFitter: React.FC<TextFitterProps> = ({
   return (
     <div ref={containerRef} className="relative flex items-center justify-center overflow-hidden w-full h-full" style={{ padding: `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px` }}>
       <div ref={textContentRef} className={`relative text-center select-none ${isRoleA ? 'font-extrabold' : 'font-light'}`} style={{ fontSize: `${fontSize}px`, lineHeight: DETERMINISTIC_LINE_HEIGHT, transform: `translateY(${isRoleA ? '-4%' : '0'})`, width: '100%' }}>
-        {words.map((word, idx) => (
+        {words.length > 0 ? words.map((word, idx) => (
           <React.Fragment key={idx}>
             <span data-word-idx={idx} style={getHighlightStyle(idx)} className="inline-block">{word}</span>
             {idx < words.length - 1 ? ' ' : ''}
           </React.Fragment>
-        ))}
+        )) : <span>...</span>}
         {underline && underlineRects.map((ur, i) => (
           <div key={i} className="absolute pointer-events-none" style={{ left: ur.rect.left, top: ur.rect.bottom - (fontSize * 0.12), width: ur.rect.width, height: Math.max(2, fontSize * 0.08), backgroundColor: ur.color, borderRadius: '99px', zIndex: -1 }} />
         ))}

@@ -1,8 +1,7 @@
 import { Language } from '../types';
 
-const synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
+const synth = typeof window !== 'undefined' ? (window.speechSynthesis || null) : null;
 
-// Strong reference to prevent garbage collection of onboundary events
 let activeUtterance: SpeechSynthesisUtterance | null = null;
 let fallbackInterval: number | null = null;
 let fallbackCheckTimeout: number | null = null;
@@ -23,16 +22,20 @@ const naturalVoicePreferences: Record<Language, string[]> = {
 
 const findDeterministicVoice = (lang: Language): SpeechSynthesisVoice | null => {
   if (!synth) return null;
-  const voices = synth.getVoices();
-  const langCode = languageToLangCode[lang];
-  const preferences = naturalVoicePreferences[lang];
+  try {
+    const voices = synth.getVoices();
+    const langCode = languageToLangCode[lang];
+    const preferences = naturalVoicePreferences[lang];
 
-  for (const prefName of preferences) {
-    const found = voices.find(v => v.name.includes(prefName));
-    if (found) return found;
+    for (const prefName of preferences) {
+      const found = voices.find(v => v.name.includes(prefName));
+      if (found) return found;
+    }
+
+    return voices.find(v => v.lang.startsWith(langCode) || v.lang === langCode) || null;
+  } catch (e) {
+    return null;
   }
-
-  return voices.find(v => v.lang.startsWith(langCode) || v.lang === langCode) || null;
 };
 
 export const normalizeForHighlight = (text: string): string => {
@@ -42,9 +45,6 @@ export const normalizeForHighlight = (text: string): string => {
     .trim();
 };
 
-/**
- * playPhrase - Production hardened speech synth with word boundary fallback
- */
 export const playPhrase = (
   text: string, 
   language: Language, 
@@ -52,8 +52,12 @@ export const playPhrase = (
   onBoundary?: (charIndex: number) => void,
   onEnd?: () => void
 ) => {
-  if (!synth) return;
-  if (synth.speaking) synth.cancel(); // Interrupt previous for tactile responsiveness
+  if (!synth) {
+     onEnd?.();
+     return;
+  }
+  
+  if (synth.speaking) synth.cancel?.();
 
   if (fallbackInterval) clearInterval(fallbackInterval);
   if (fallbackCheckTimeout) clearTimeout(fallbackCheckTimeout);
@@ -68,8 +72,8 @@ export const playPhrase = (
     }
 
     activeUtterance = new SpeechSynthesisUtterance(normalizedText); 
-    activeUtterance.lang = languageToLangCode[language];
-    activeUtterance.rate = rate;
+    activeUtterance.lang = languageToLangCode[language] || 'en-US';
+    activeUtterance.rate = rate || 1.0;
 
     const voice = findDeterministicVoice(language);
     if (voice) {
@@ -91,7 +95,6 @@ export const playPhrase = (
       }
     };
 
-    // Fallback logic for browsers where onboundary is buggy (e.g. some Android WebViews)
     const startFallback = () => {
       if (fallbackInterval || !activeUtterance) return;
       let currentWordIdx = 0;
@@ -140,13 +143,16 @@ export const playPhrase = (
 
     synth.speak(activeUtterance);
   } catch (e) {
-    console.error("Speech playback exception:", e);
+    console.error("Speech playback error:", e);
     if (onEnd) onEnd();
   }
 };
 
 export const stopAllPlayback = () => {
-  if (synth) synth.cancel();
+  if (!synth) return;
+  try {
+    synth.cancel?.();
+  } catch(e) {}
   if (fallbackInterval) clearInterval(fallbackInterval);
   if (fallbackCheckTimeout) clearTimeout(fallbackCheckTimeout);
   fallbackInterval = null;
