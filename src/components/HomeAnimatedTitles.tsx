@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { playLetterMotion, playTitlePresence } from '../utils/uiAudioService';
+import { playLetterMotion, playTitlePresence } from "../utils/uiAudioService";
 
 interface HomeAnimatedTitlesProps {
   color?: string;
