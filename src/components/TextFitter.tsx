@@ -1,5 +1,5 @@
 import React, { useState, useRef, useLayoutEffect, useMemo } from 'react';
-import { normalizeForHighlight } from '../utils/audioService';
+import { normalizeForHighlight } from "../utils/audioService";
 
 interface TextFitterProps {
   text: string;
