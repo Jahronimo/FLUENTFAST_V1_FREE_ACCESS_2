@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { SessionState, SessionMode, Language, SemanticAnchor } from '../types';
 import { COLORS, PHRASES, Icons } from '../constants';
 import TextFitter from './TextFitter';
-import { playPhrase, stopAllPlayback } from '../utils/audioService';
-import { playTap, playToggle } from '../utils/uiAudioService';
+import { playTap, playToggle } from "../utils/uiAudioService";
+import { playPhrase, stopAllPlayback } from "../utils/audioService";
 
 interface SessionProps {
   state: SessionState;
